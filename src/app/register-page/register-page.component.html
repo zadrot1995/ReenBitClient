@@ -1,0 +1,52 @@
+<div class="row">
+  <form class="col s12">
+    <div class="row" style="align-content: center">
+      <div class="container col-lg-8 com-sm-10 offset-lg-2 offset-sm-1 p-4">
+        <div class="row">
+          <h3 class="text-left col-6">Signing up</h3>
+
+        </div>
+
+
+        <div class="input-field s6">
+          <input [(ngModel)]="newUser.name" placeholder="Email" #email="ngModel" type="email" class="validate text-light" name="email" required email>
+          <mat-error *ngIf="email.invalid && email.dirty" class="text-left">Incorrect email</mat-error>
+        </div>
+
+        <div class="input-field s6">
+          <input [(ngModel)]="newUser.password" placeholder="Password" #password="ngModel" type="password" class="validate text-light" name="password" required minlength="6" maxlength="16">
+          <mat-error *ngIf="password.invalid && password.dirty" class="text-left">Password length must be in 6 - 16 chars</mat-error>
+        </div>
+        <div class="input-field s6">
+          <input [(ngModel)]="passwordC" placeholder="Confirm password" #confirmPass="ngModel" type="password" class="validate text-light" name="passwordConfirmation" required minlength="6" maxlength="16">
+          <mat-error *ngIf="confirmPass.invalid && confirmPass.dirty" class="text-left">Invalid input </mat-error>
+          <mat-error *ngIf="confirmPass.dirty && confirmPass.value != password.value" class="text-left"> Passwords does not match </mat-error>
+        </div>
+        <button (click)="createUser()" [disabled]="password.invalid || confirmPass.invalid || email.invalid" class="btn btn-outline-success col-2 mt-3 mb-2 p-2 mb-5" type="submit" name="action">Sign up
+          <i class="material-icons right">send</i>
+        </button>
+        <div *ngIf="!isValid">
+          <p style="color: red">{{errors}}</p>
+        </div>
+        <!--<mat-progress-spinner [mode]="mode"  ></mat-progress-spinner>-->
+        <div class="preloader-wrapper big active" *ngIf="preloader">
+          <div class="spinner-layer spinner-green-only">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div><div class="gap-patch">
+            <div class="circle"></div>
+          </div><div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+    <div>
+    </div>
+  </form>
+</div>
+
+

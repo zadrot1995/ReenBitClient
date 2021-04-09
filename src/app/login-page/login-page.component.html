@@ -1,0 +1,49 @@
+<div class="row">
+  <form class="col s12">
+    <div class="row" style="align-content: center">
+      <div class="container col-lg-8 com-sm-10 offset-lg-2 offset-sm-1 p-4">
+        <div class="row">
+          <h3 class="text-left col-6">Signing in</h3>
+          <div class="col-6 text-right">
+            <div class="row mt-4">
+              <a class="col ml-4 " href="#" style="text-decoration: underline">Forgot password</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-field s6">
+          <input [(ngModel)]="loginUser.name" placeholder="Login" id="email" type="text" class="validate text-light" name="email">
+        </div>
+        <div class="input-field s6">
+          <input [(ngModel)]="loginUser.password" placeholder="Password" id="password" type="password" class="validate text-light" name="password">
+        </div>
+
+        <button (click)="login()" class="btn btn-outline-success col-2 mt-3 mb-2 p-2" type="submit" name="action">Sign in
+        </button>
+        <div class="row text-light mt-4">
+          <p class="col-lg-3"></p>
+          <p class="col-lg-3 col-sm-12">Don`t have an account?</p>
+          <a class="col-lg-2 col-sm-12" routerLink="register">Sign up</a>
+        </div>
+        <mat-error *ngIf="!isValid">Login or password are wrong</mat-error>
+
+        <div class="preloader-wrapper big active" *ngIf="preloader">
+          <div class="spinner-layer spinner-green-only">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div><div class="gap-patch">
+            <div class="circle"></div>
+          </div><div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div>
+    </div>
+  </form>
+</div>
+
+

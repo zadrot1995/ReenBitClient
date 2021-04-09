@@ -1,0 +1,6 @@
+<div *ngIf="isLoggedIn" class="introBlock">
+  <p>home-page works!</p>
+</div>
+<div class="row" *ngIf="!isLoggedIn">
+  <app-login-page></app-login-page>
+</div>
