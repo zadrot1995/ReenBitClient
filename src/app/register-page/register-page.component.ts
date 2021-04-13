@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {User} from '../../Models/User';
+import {UserService} from '../../Services/user.service';
+import {UserDto} from '../../Dto/UserDto';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -18,7 +20,7 @@ export class RegisterPageComponent implements OnInit {
   passwordC: string;
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private userService: UserService) { }
 
   ngOnInit(): void {
   }
@@ -27,12 +29,13 @@ export class RegisterPageComponent implements OnInit {
       Name: this.newUser.name,
       Password: this.newUser.password
     };
-    const result = this.http.post('https://localhost:44322/api/account/register', body, httpOptions)
+    const result = this.http.post<any>('https://localhost:44322/api/account/register', body, httpOptions)
       .subscribe(data => {
           console.log(result);
           this.isValid = true;
           console.log(body);
-          window.location.href = 'emailConfirmationMessage';
+          this.userService.saveUser(data);
+          window.location.href = '';
         },
         error => {
           console.log(error);

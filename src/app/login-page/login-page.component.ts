@@ -29,7 +29,7 @@ export class LoginPageComponent implements OnInit {
   }
   login(): void{
     const body = {
-      Email: this.loginUser.name,
+      Name: this.loginUser.name,
       Password: this.loginUser.password};
     const result = this.http.post<any>('https://localhost:44322/api/account/login', body, httpOptions ).subscribe(
       data => {

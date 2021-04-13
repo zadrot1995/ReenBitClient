@@ -8,11 +8,14 @@ import {RouterModule} from '@angular/router';
 import { LoginPageComponent } from './login-page/login-page.component';
 import {FormsModule} from '@angular/forms';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
+import { ChatPageComponent } from './chat-page/chat-page.component';
+import { CreateChatPageComponent } from './create-chat-page/create-chat-page.component';
 
 const routes = [
   {path: '', component: HomePageComponent},
   {path: 'login', component: LoginPageComponent},
-  {path: 'register', component: RegisterPageComponent}
+  {path: 'register', component: RegisterPageComponent},
+  {path: 'createChat', component: CreateChatPageComponent}
 
 
 ];
@@ -22,7 +25,9 @@ const routes = [
     AppComponent,
     HomePageComponent,
     RegisterPageComponent,
-    LoginPageComponent
+    LoginPageComponent,
+    ChatPageComponent,
+    CreateChatPageComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
