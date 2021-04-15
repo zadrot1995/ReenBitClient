@@ -1,9 +1,10 @@
-import {AfterContentChecked, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterContentChecked, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {SignalrService} from '../../Services/signalr.service';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {UserService} from '../../Services/user.service';
 import {NavigationEnd, NavigationStart, Router} from '@angular/router';
 import {HubConnection, HubConnectionBuilder} from '@microsoft/signalr';
+
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -14,7 +15,7 @@ const httpOptions = {
   templateUrl: './chat-page.component.html',
   styleUrls: ['./chat-page.component.css']
 })
-export class ChatPageComponent implements OnInit {
+export class ChatPageComponent implements OnInit, OnDestroy {
 
   title = 'chat-ui';
   public messages: any;
@@ -25,39 +26,34 @@ export class ChatPageComponent implements OnInit {
 
   private connection: HubConnection;
 
-  constructor(private http: HttpClient, private userService: UserService) {
+  constructor(private http: HttpClient, private userService: UserService, public signalRService: SignalrService) {
   }
 
   ngOnInit(): void {
-    this.initWebSocket();
-  }
-  initWebSocket() {
-    this.connection = new HubConnectionBuilder()
-      .withUrl('https://localhost:44322/hub/chat')
-      .build();
-    this.connection.start();
-    this.connection.on('messageReceived', (from: string, body: string) => {
-      console.log({ from, body });
-    });
-
-    this.connection.on('userJoined', user => {
-      if (user === this.userName) {
-        this.hideJoin = true;
-      }
-      this.messages.push({ from: '> ', body: user + ' joined' });
-    });
-
-    this.connection.on('userLeft', user => {
-      this.messages.push({ from: '! ', body: user + ' has left!' });
-    });
+    this.signalRService.connect();
   }
 
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any) {
+    this.signalRService.disconnect();
+  }
   sendMessage(): void {
 
-    const promise = this.connection.invoke('Send', this.userService.getUser().name , this.text, '35ad00a7-7fd7-4167-8dc1-08d8fdc3862c')
-      .then(() => { console.log('message sent successfully to hub'); })
-      .catch((err) => console.log('error while sending a message to hub: ' + err));
+    // you can send the messge direclty to the hub or use the api controller.
+    // choose wisely
+    // this.signalRService.sendMessageToApi(this.text).subscribe({
+    //   next: _ => this.text = '',
+    //   error: (err) => console.error(err)
+    // });
 
+    this.signalRService.sendMessageToHub(this.text).subscribe({
+      next: _ => this.text = '',
+      error: (err) => console.error(err)
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.signalRService.disconnect();
   }
 
 }

@@ -33,7 +33,7 @@ export class CreateChatPageComponent implements OnInit {
         .subscribe(data => {
             console.log(result);
             console.log(body);
-            window.location.href = 'emailConfirmationMessage';
+            window.location.href = '';
           },
           error => {
             console.log(error);
