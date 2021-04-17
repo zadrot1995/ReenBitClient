@@ -9,7 +9,11 @@ import { LoginPageComponent } from './login-page/login-page.component';
 import {FormsModule} from '@angular/forms';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import { ChatPageComponent } from './chat-page/chat-page.component';
-import { CreateChatPageComponent } from './create-chat-page/create-chat-page.component';
+import {CreateChatPageComponent} from './create-chat-page/create-chat-page.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldControl, MatFormFieldModule} from '@angular/material/form-field';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 const routes = [
   {path: '', component: HomePageComponent},
@@ -20,6 +24,10 @@ const routes = [
 
 ];
 
+// @ts-ignore
+// @ts-ignore
+// @ts-ignore
+// @ts-ignore
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,16 +35,20 @@ const routes = [
     RegisterPageComponent,
     LoginPageComponent,
     ChatPageComponent,
-    CreateChatPageComponent
+    CreateChatPageComponent,
   ],
   imports: [
     RouterModule.forRoot(routes),
     BrowserModule,
     RouterModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NoopAnimationsModule,
+    MatSelectModule,
+    ScrollingModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+
 })
 export class AppModule { }

@@ -2,22 +2,50 @@
 
   <div class="row">
 
-    <div class="col-sm-3">
+    <div class="col-sm-3 " style="margin: 1%; padding: 2%;">
       <h1>Chats</h1>
-      <button class="btn-floating btn-large waves-effect waves-light green" type="submit" name="action"
+      <a class="btn-floating btn-large waves-effect waves-light #ff9800 orange" type="submit" name="action" routerLink="createChat"
               style="position: relative;
                     left: 50%;
                     transform: translate(-50%, 0);
                     margin-bottom: 5%"
               ng-disabled="formValidation()">
         <img src="../../assets/images/Plus3.png" style="height: 60%; width: 60%;">
-      </button>
+      </a>
+      <div *ngFor="let chat of signalRService?.chats">
+        <div class="collection">
+          <button (click)="selectChat(chat)" class="waves-effect waves-light btn #ff9800 orange" style="width: 100%">{{chat.name}} ({{chat.chatType}})</button>
+        </div>
+      </div>
+      <div *ngIf="signalRService.chats?.length == 0">
+        <p>You haven't any chats yet</p>
+      </div>
+      <div class="preloader-wrapper big active" *ngIf="preloader">
+        <div class="spinner-layer spinner-red-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+        </div>
+      </div>
     </div>
 
-    <div class="col">
-  <h1>SignalR Chat DEMO</h1>
-  <input type="text" class="mt-3 mb-3 mr-3" [(ngModel)]="text">
-  <button class="btn btn-primary" [disabled]="text?.length==0" (click)="sendMessage()">Send Message</button>
+    <div class="col" *ngIf="signalRService.selectedChat === undefined">
+      <H1>Sellect the chat</H1>
+      <a class="btn-floating btn-large waves-effect waves-light #ff9800 orange" type="submit" name="action" routerLink="createChat"
+         style="position: relative;
+                    left: 50%;
+                    transform: translate(-50%, 0);
+                    margin-bottom: 5%"
+         ng-disabled="formValidation()">
+        <img src="../../assets/images/Plus3.png" style="height: 60%; width: 60%;">
+      </a>
+    </div>
+    <div class="col" *ngIf="signalRService.selectedChat != null">
+  <h1>{{signalRService.selectedChat.name}}</h1>
   <h4 class="mb-3">List of Messages</h4>
 
 
@@ -26,12 +54,42 @@
   </div>
   <div *ngFor="let m of signalRService?.messages">
     <div class="mb-2 mt-2">
-      <div><strong>ConnectionID</strong> {{m.ConnectionId}}</div>
-      <div><strong>Date</strong> {{m.DateTime }}</div>
-      <div><strong>Message</strong> {{m.Text}}</div>
+
+      <div (mouseenter)="contextMessageMenu = true" (mouseleave)="contextMessageMenu = false">
+        <strong>{{m.userId}}: </strong> {{m.text}}
+      </div>
+
+      <div class="div1"><strong>Date</strong> {{m.dateTime }}</div>
+
+      <div *ngIf="contextMessageMenu"class="div1">
+          <button class="btn-floating btn-small waves-effect waves-light #ff9800 orange" type="submit" name="action"
+                  style="position: relative;
+                    transform: translate(-50%, 0);
+                    left: 30%;
+                    margin-right: 5%;
+                    margin-bottom: 5%"
+                  >
+
+            <img src="../../assets/images/EditIcon.png" style="height: 60%; width: 60%;">
+
+          </button>
+
+          <button class="btn-floating btn-small waves-effect waves-light red" type="submit" name="action"
+                  style="position: relative;
+                  left: 30%;
+                    transform: translate(-50%, 0);
+                    margin-bottom: 5%">
+            <img src="../../assets/images/DeleteIcon.png" style="height: 60%; width: 60%;">
+          </button>
+
+      </div>
       <hr>
     </div>
   </div>
+      <div style="margin-bottom: 4%">
+      <input type="text" class="mt-3 mb-3 mr-3" [(ngModel)]="text">
+      <button class="btn btn-primary #ff9800 orange" [disabled]="text?.length==0" (click)="sendMessage()">Send Message</button>
+      </div>
     </div>
 </div>
 </div>

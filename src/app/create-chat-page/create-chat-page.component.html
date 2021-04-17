@@ -1,9 +1,62 @@
-<div>
-  <input type = text placeholder="Name" [(ngModel)]="chatCreateDto.name" name="name">
+
+<div class="row " style=" border-radius: 10px;margin: 5%; border: 3px solid orange;">
+  <form novalidate  class="col s12 css-form" style="margin-top: 5%" name="myForm">
+    <div>
+      <input type = text placeholder="Name" [(ngModel)]="chatCreateDto.name" name="name">
+    </div>
+
+
+    <div class="col-5">
+      <h6>Type</h6>
+      <mat-form-field appearance="fill">
+        <mat-label>Type</mat-label>
+        <mat-select  [(ngModel)]="chatCreateDto.chatType" required name="algorithm" #algorithm="ngModel" (selectionChange)="setPrivateValidation()">
+          <mat-option *ngFor="let type of types" [value]="type">
+            {{type}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="collection" *ngFor="let user of selectedUsers">
+      <a class="collection-item" (click)="deleteSelectedUser(user)">{{user.name}}</a>
+    </div>
+
+    <div class="preloader-wrapper big active" *ngIf="preloader">
+      <div class="spinner-layer spinner-red-only">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+      </div>
+    </div>
+
+      <div>
+        <!--      <button content="Create" (click)="createChat()"></button>-->
+        <button (click)="createChat()" [disabled]="chatCreateDto.name?.length==0" class="btn-floating btn-large waves-effect waves-light #ff9800 orange" type="submit" name="action"
+                style="position: relative;
+                    left: 50%;
+                    transform: translate(-50%, 0);
+                    "
+                ng-disabled="formValidation()">
+          <img src="../../assets/images/Plus3.png" style="height: 60%; width: 60%;">
+        </button>
+
+      </div>
+
+    <div>
+      <input type = text placeholder="User name" [(ngModel)]="findByName" name="userName" (ngModelChange)="filterUser()">
+    </div>
+
+    <div class="collection" *ngFor="let user of users" [class.disabled]="userListBlock">
+      <a (click)="selectUser(user)" class="collection-item" >{{user.name}}</a>
+    </div>
+
+
+  </form>
 </div>
-<div>
-  <input type = text placeholder="User Id" [(ngModel)]="text"name="userId">
-</div>
-<div>
-  <button content="Create" (click)="createChat()"></button>
-</div>
+
+

@@ -5,15 +5,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
 <nav>
-  <div class="nav-wrapper">
-    <a href="#" class="brand-logo">Vizmit na robotu @indastry</a>
+  <div class="nav-wrapper #ff9800 orange">
+    <img class="responsive-img" src="../assets/images/App-Orange-Player.ico" style="width: 3%;">
+    <a href="#" class="brand-logo">Apelsinka-Chat</a>
     <ul *ngIf="!isLoggedIn" id="nav-mobile" class="right hide-on-med-and-down">
       <li><a routerLink="login">Login</a></li>
       <li><a routerLink="register">Register</a></li>
     </ul>
     <ul *ngIf="isLoggedIn" id="nav-mobile1" class="right hide-on-med-and-down">
       <li><a routerLink="createChat">{{userService.getUser().name}}</a></li>
-      <li><a href="badges.html" (click)="logout()">Logout</a></li>
+      <li><a href="login" (click)="logout()">Logout</a></li>
     </ul>
 
   </div>
