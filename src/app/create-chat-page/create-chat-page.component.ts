@@ -48,7 +48,8 @@ export class CreateChatPageComponent implements OnInit {
     const body = {
         name: this.chatCreateDto.name,
         usersId: this.chatCreateDto.usersId,
-        chatType: this.chatCreateDto.chatType
+        chatType: this.chatCreateDto.chatType,
+        adminId: this.userService.getUser().id
       };
     const result = this.http.post<ChatDto>('https://localhost:44322/api/chat', body, httpOptions)
         .subscribe(data => {

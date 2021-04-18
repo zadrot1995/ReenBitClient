@@ -5,19 +5,21 @@
     <div class="col-sm-3 " style="margin: 1%; padding: 2%;">
       <h1>Chats</h1>
       <a class="btn-floating btn-large waves-effect waves-light #ff9800 orange" type="submit" name="action" routerLink="createChat"
-              style="position: relative;
+         style="position: relative;
                     left: 50%;
                     transform: translate(-50%, 0);
                     margin-bottom: 5%"
-              ng-disabled="formValidation()">
+         ng-disabled="formValidation()">
         <img src="../../assets/images/Plus3.png" style="height: 60%; width: 60%;">
       </a>
       <div *ngFor="let chat of signalRService?.chats">
-        <div class="collection">
-          <button (click)="selectChat(chat)" class="waves-effect waves-light btn #ff9800 orange" style="width: 100%">{{chat.name}} ({{chat.chatType}})</button>
+        <div class="collection row">
+          <div class="col">
+            <button (click)="selectChat(chat)" class="waves-effect waves-light btn #ff9800 orange" style="width: 100%">{{chat.name}} ({{chat.chatType}})</button>
+          </div>
         </div>
       </div>
-      <div *ngIf="signalRService.chats?.length == 0">
+      <div *ngIf="signalRService.chats?.length == 0 && preloader == false">
         <p>You haven't any chats yet</p>
       </div>
       <div class="preloader-wrapper big active" *ngIf="preloader">
@@ -44,52 +46,93 @@
         <img src="../../assets/images/Plus3.png" style="height: 60%; width: 60%;">
       </a>
     </div>
-    <div class="col" *ngIf="signalRService.selectedChat != null">
-  <h1>{{signalRService.selectedChat.name}}</h1>
-  <h4 class="mb-3">List of Messages</h4>
+    <div class="col" *ngIf="signalRService.selectedChat != null" style="margin-bottom: 5%">
+      <h3>{{signalRService.selectedChat.name}}</h3>
+      <h5 class="mb-3">List of Messages</h5>
 
 
-  <div *ngIf="signalRService.messages?.length==0">
-    <p>You haven't send or received messages</p>
-  </div>
-  <div *ngFor="let m of signalRService?.messages">
-    <div class="mb-2 mt-2">
-
-      <div (mouseenter)="contextMessageMenu = true" (mouseleave)="contextMessageMenu = false">
-        <strong>{{m.userId}}: </strong> {{m.text}}
+      <div *ngIf="signalRService.messages?.length==0">
+        <p>You haven't send or received messages</p>
       </div>
+<!--        <div class="col" *ngIf="userService.getUser().id == signalRService.selectedChat.adminId">-->
+<!--          &lt;!&ndash;            routerLink="editChat/{{signalRService.selectedChat.id}}"&ndash;&gt;-->
+<!--          <a mat-raised-button-->
+<!--                  class="btn-floating btn-small waves-effect waves-light #ff9800 orange"-->
+<!--                  type="submit"-->
+<!--                  name="action"-->
+<!--                  style="position: relative;-->
+<!--                    left: 30%;-->
+<!--                    margin-left: 20%;"-->
+<!--          >-->
 
-      <div class="div1"><strong>Date</strong> {{m.dateTime }}</div>
+<!--            <img src="../../assets/images/EditIcon.png" style="height: 60%; width: 60%;">-->
 
-      <div *ngIf="contextMessageMenu"class="div1">
-          <button class="btn-floating btn-small waves-effect waves-light #ff9800 orange" type="submit" name="action"
-                  style="position: relative;
+<!--          </a>-->
+<!--        </div>-->
+        <button class="waves-effect waves-light btn"
+                (click)="leaveFromChat(signalRService.selectedChat.id, userService.getUser().id)">
+          leave
+        </button>
+
+<!--        <div class="col">-->
+<!--          <button class="btn-floating btn-small waves-effect waves-light red" type="submit"-->
+<!--                  name="action"-->
+<!--                  style="position: relative;-->
+<!--                  left: 30%; margin-left: 5%">-->
+
+<!--            <img src="../../assets/images/DeleteIcon.png" style="height: 60%; width: 60%;">-->
+<!--          </button>-->
+
+      <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+
+        <div *ngFor="let message of signalRService?.messages" style="margin-left: 3%; margin-right: 3%">
+          <div class="mb-2 mt-2">
+
+            <div (mouseenter)="contextMessageMenu = true">
+              <strong>{{message.userName}}: </strong> {{message.text}}
+            </div>
+
+            <div class="div1"><strong>Date</strong> {{message.dateTime }}</div>
+            <div class="div1" *ngIf="message.isEdited"> (edited)</div>
+
+            <div *ngIf="message.userId == userService.getUser().id"class="div1">
+              <button mat-raised-button
+                      class="btn-floating btn-small waves-effect waves-light #ff9800 orange"
+                      type="submit"
+                      name="action"
+                      (click)="openDialog(message)"
+                      style="position: relative;
                     transform: translate(-50%, 0);
                     left: 30%;
                     margin-right: 5%;
                     margin-bottom: 5%"
-                  >
+              >
 
-            <img src="../../assets/images/EditIcon.png" style="height: 60%; width: 60%;">
+                <img src="../../assets/images/EditIcon.png" style="height: 60%; width: 60%;">
 
-          </button>
+              </button>
 
-          <button class="btn-floating btn-small waves-effect waves-light red" type="submit" name="action"
-                  style="position: relative;
+              <button class="btn-floating btn-small waves-effect waves-light red" type="submit"
+                      name="action" (click)="signalRService.sendDeletedMessageToHub(message)"
+                      style="position: relative;
                   left: 30%;
                     transform: translate(-50%, 0);
                     margin-bottom: 5%">
-            <img src="../../assets/images/DeleteIcon.png" style="height: 60%; width: 60%;">
-          </button>
+                <img src="../../assets/images/DeleteIcon.png" style="height: 60%; width: 60%;">
+              </button>
 
+            </div>
+            <hr>
+          </div>
+        </div>
+      </cdk-virtual-scroll-viewport>
+      <div style="margin-bottom: 10%">
+        <input type="text" class="mt-3 mb-3 mr-3" [(ngModel)]="text" placeholder="Message...">
+        <button class="btn btn-primary #ff9800 orange" [disabled]="text?.length==0" (click)="sendMessage()">Send Message</button>
       </div>
-      <hr>
     </div>
   </div>
-      <div style="margin-bottom: 4%">
-      <input type="text" class="mt-3 mb-3 mr-3" [(ngModel)]="text">
-      <button class="btn btn-primary #ff9800 orange" [disabled]="text?.length==0" (click)="sendMessage()">Send Message</button>
-      </div>
-    </div>
 </div>
-</div>
+
+
+

@@ -1,4 +1,4 @@
-import {AfterContentChecked, AfterContentInit, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {AfterContentChecked, AfterContentInit, Component, HostListener, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {SignalrService} from '../../Services/signalr.service';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {UserService} from '../../Services/user.service';
@@ -7,6 +7,9 @@ import {HubConnection, HubConnectionBuilder} from '@microsoft/signalr';
 import {ChatService} from '../../Services/chat.service';
 import {ChatDto} from '../../Dto/ChatDto';
 import {Chat} from '../../Models/Chat';
+import {MatDialog} from '@angular/material/dialog';
+import {EditMessageDialogComponent} from '../edit-message-dialog/edit-message-dialog.component';
+import {Message} from '../../Models/Message';
 
 
 const httpOptions = {
@@ -19,13 +22,13 @@ const httpOptions = {
   styleUrls: ['./chat-page.component.css']
 })
 export class ChatPageComponent implements OnInit, OnDestroy {
-
+  items = Array.from({length: 100000}).map((_, i) => `Item #${i}`);
   title = 'chat-ui';
   public hideJoin: boolean;
   public userName: string;
   public  text: string;
   public chats: ChatDto[];
-  public contextMessageMenu = false;
+  public contextMessageMenu = true;
   preloader = false;
   public selectedType: string;
 
@@ -36,7 +39,8 @@ export class ChatPageComponent implements OnInit, OnDestroy {
   constructor(private http: HttpClient,
               private userService: UserService,
               public signalRService: SignalrService,
-              private  chatService: ChatService) {
+              private  chatService: ChatService,
+              public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -51,6 +55,16 @@ export class ChatPageComponent implements OnInit, OnDestroy {
 
   }
 
+  leaveFromChat(chatId: string, userId: string){
+    this.signalRService.selectedChat = null;
+    for ( let i = 0; i < this.signalRService.chats.length; i++){
+      if ( this.signalRService.chats[i].id === chatId ) {
+        this.signalRService.chats.splice(i, 1);
+        i--;
+      }
+    }
+  }
+
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
     this.signalRService.disconnect();
@@ -59,6 +73,24 @@ export class ChatPageComponent implements OnInit, OnDestroy {
   reloadNotification($event: any) {
     this.signalRService.disconnect();
   }
+
+  openDialog(message: Message): void {
+    console.log('befor open: ', message);
+    const dialogRef = this.dialog.open(EditMessageDialogComponent, {
+      width: '250px',
+      data: message
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      this.signalRService.SendEditMessageToHub(result.text, result.chatId, message.id);
+      console.log('result: ', result);
+    });
+    console.log('After close: ', message);
+
+  }
+
+
   sendMessage(): void {
 
     // you can send the messge direclty to the hub or use the api controller.

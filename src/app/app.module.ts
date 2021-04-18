@@ -14,13 +14,16 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldControl, MatFormFieldModule} from '@angular/material/form-field';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import { EditMessageDialogComponent } from './edit-message-dialog/edit-message-dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { EditChatPageComponent } from './edit-chat-page/edit-chat-page.component';
 
 const routes = [
   {path: '', component: HomePageComponent},
   {path: 'login', component: LoginPageComponent},
   {path: 'register', component: RegisterPageComponent},
-  {path: 'createChat', component: CreateChatPageComponent}
-
+  {path: 'createChat', component: CreateChatPageComponent},
+  { path: 'editChat/:id', component: EditChatPageComponent}
 
 ];
 
@@ -36,6 +39,8 @@ const routes = [
     LoginPageComponent,
     ChatPageComponent,
     CreateChatPageComponent,
+    EditMessageDialogComponent,
+    EditChatPageComponent,
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -45,7 +50,8 @@ const routes = [
     HttpClientModule,
     NoopAnimationsModule,
     MatSelectModule,
-    ScrollingModule
+    ScrollingModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent],
